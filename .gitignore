@@ -51,3 +51,9 @@ buck-out/
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
+
+# REMOTEDEV DB
+remotedev-db.sqlite3
+
+#SECRETS.JS
+secrets.js
