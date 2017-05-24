@@ -46,6 +46,10 @@
 		9B678195186746AFB2CDF0EB /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 432ADB03668B4A92ACE9B17D /* Octicons.ttf */; };
 		4B3A2EB298844DC89C94D2BD /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08C99C2479064211AB05FC70 /* SimpleLineIcons.ttf */; };
 		81C481D70A7245FAB5776C05 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2F310B9C3F704CE3B7ED9059 /* Zocial.ttf */; };
+		556013930EDB46EA852AED4C /* libA0RNLock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8656D6ABB74148D488E13428 /* libA0RNLock.a */; };
+		ACF09095C7DF4CF7A9671A9B /* libRealmReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51D91E2166A54BD6BCBEC2F2 /* libRealmReact.a */; };
+		7FD3820494D6494599D186BC /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B608BCE1F55448209188DAA9 /* libc++.tbd */; };
+		3592E1C8E01F48E9815D299E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BF66615739C4FF1A62006EC /* libz.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -277,6 +281,12 @@
 		432ADB03668B4A92ACE9B17D /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		08C99C2479064211AB05FC70 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		2F310B9C3F704CE3B7ED9059 /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		B627D26FCCAD4B879F57E864 /* A0RNLock.xcodeproj */ = {isa = PBXFileReference; name = "A0RNLock.xcodeproj"; path = "../node_modules/react-native-lock/ios/A0RNLock.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		8656D6ABB74148D488E13428 /* libA0RNLock.a */ = {isa = PBXFileReference; name = "libA0RNLock.a"; path = "libA0RNLock.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		0F0036FB55F5478C817ED62E /* RealmReact.xcodeproj */ = {isa = PBXFileReference; name = "RealmReact.xcodeproj"; path = "../node_modules/realm/react-native/ios/RealmReact.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		51D91E2166A54BD6BCBEC2F2 /* libRealmReact.a */ = {isa = PBXFileReference; name = "libRealmReact.a"; path = "libRealmReact.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		B608BCE1F55448209188DAA9 /* libc++.tbd */ = {isa = PBXFileReference; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = sourcecode.text-based-dylib-definition; explicitFileType = undefined; includeInIndex = 0; };
+		5BF66615739C4FF1A62006EC /* libz.tbd */ = {isa = PBXFileReference; name = "libz.tbd"; path = "usr/lib/libz.tbd"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = sourcecode.text-based-dylib-definition; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -304,6 +314,10 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				5B66A2B2053C4B2F9A645501 /* libRNVectorIcons.a in Frameworks */,
+				556013930EDB46EA852AED4C /* libA0RNLock.a in Frameworks */,
+				ACF09095C7DF4CF7A9671A9B /* libRealmReact.a in Frameworks */,
+				7FD3820494D6494599D186BC /* libc++.tbd in Frameworks */,
+				3592E1C8E01F48E9815D299E /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,6 +485,8 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				85289DEE4210476690F6DC2A /* RNVectorIcons.xcodeproj */,
+				B627D26FCCAD4B879F57E864 /* A0RNLock.xcodeproj */,
+				0F0036FB55F5478C817ED62E /* RealmReact.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -492,6 +508,7 @@
 				00E356EF1AD99517003FC87E /* ChatTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				EB8F5937534B4AFFBAE7F5AE /* Resources */,
+				1AE80FB59A44460894CC0205 /* Frameworks */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -523,6 +540,16 @@
 				2F310B9C3F704CE3B7ED9059 /* Zocial.ttf */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+			path = "";
+		};
+		1AE80FB59A44460894CC0205 /* Frameworks */ = {
+			isa = "PBXGroup";
+			children = (
+				B608BCE1F55448209188DAA9 /* libc++.tbd */,
+				5BF66615739C4FF1A62006EC /* libz.tbd */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 			path = "";
 		};
@@ -1028,10 +1055,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-lock/ios/A0RNLock/**",
+					"$(SRCROOT)/../node_modules/realm/src/**",
 				);
 			};
 			name = Debug;
@@ -1053,10 +1084,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-lock/ios/A0RNLock/**",
+					"$(SRCROOT)/../node_modules/realm/src/**",
 				);
 			};
 			name = Release;
@@ -1079,6 +1114,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-lock/ios/A0RNLock/**",
+					"$(SRCROOT)/../node_modules/realm/src/**",
 				);
 			};
 			name = Debug;
@@ -1100,6 +1137,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-lock/ios/A0RNLock/**",
+					"$(SRCROOT)/../node_modules/realm/src/**",
 				);
 			};
 			name = Release;
@@ -1130,10 +1169,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-lock/ios/A0RNLock/**",
+					"$(SRCROOT)/../node_modules/realm/src/**",
 				);
 			};
 			name = Debug;
@@ -1164,10 +1207,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-lock/ios/A0RNLock/**",
+					"$(SRCROOT)/../node_modules/realm/src/**",
 				);
 			};
 			name = Release;
@@ -1193,6 +1240,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 			};
 			name = Debug;
@@ -1217,6 +1266,8 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 			};

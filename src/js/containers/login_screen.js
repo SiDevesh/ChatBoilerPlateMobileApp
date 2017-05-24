@@ -4,10 +4,40 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  View
+  View,
+  Button
 } from 'react-native';
+import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
+import { callAuth0LoggedIn } from '../actions'
+import realm from '../realm';
+import Auth0Lock from 'react-native-lock';
+import { Auth0Domain, Auth0ClientID } from '../secrets.js';
 
-export default class LoginScreen extends Component {
+class logInScreenComponent extends Component {
+
+  onShowLock() {
+    let self = this;
+    self.lock.show({
+      closable: true,
+      authParams: {
+        scope: "openid email offline_access",
+      }
+    },
+    (err, profile, token) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      self.props.Auth0LoggedIn(profile, token);
+      Actions.mainScreen();
+    });
+  }
+
+  componentDidMount() {
+    this.lock = new Auth0Lock({clientId: Auth0ClientID, domain: Auth0Domain});
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -21,9 +51,11 @@ export default class LoginScreen extends Component {
           Double tap R on your keyboard to reload,{'\n'}
           Shake or press menu button for dev menu
         </Text>
+        <Button onPress={()=>{this.onShowLock();}} title="GO" />
       </View>
     );
   }
+
 }
 
 const styles = StyleSheet.create({
@@ -45,3 +77,26 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+
+const mapStateToProps = (state) => {
+  return {
+    //token: state.auth0state.token,
+    //profile: state.auth0state.profile
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    Auth0LoggedIn: (profile, token) => {
+      dispatch(callAuth0LoggedIn(profile, token));
+    }
+  }
+}
+
+const logInScreen = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(logInScreenComponent)
+
+export default logInScreen;

@@ -4,9 +4,15 @@ import React from 'react';
 import { Scene, Actions } from 'react-native-router-flux'
 import LogInScreen from './containers/login_screen';
 import MainApp from './containers/main_app';
+import realm from './realm';
 
 function is_never_loggedin() {
-  return false;
+  if((realm.objectForPrimaryKey('ConfigData', 'auth0_profile').value === '')&&(realm.objectForPrimaryKey('ConfigData', 'auth0_token').value === '')) {
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 
