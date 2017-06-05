@@ -29,7 +29,7 @@ class logInScreenComponent extends Component {
         console.log(err);
         return;
       }
-      self.props.Auth0LoggedIn(profile, token);
+      self.props.auth0LoggedIn(profile, token);
       Actions.mainScreen();
     });
   }
@@ -88,7 +88,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    Auth0LoggedIn: (profile, token) => {
+    auth0LoggedIn: (profile, token) => {
       dispatch(callAuth0LoggedIn(profile, token));
     }
   }

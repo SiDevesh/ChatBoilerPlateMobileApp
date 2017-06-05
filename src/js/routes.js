@@ -3,7 +3,8 @@
 import React from 'react';
 import { Scene, Actions } from 'react-native-router-flux'
 import LogInScreen from './containers/login_screen';
-import MainApp from './containers/main_app';
+import MainScreen from './containers/main_screen';
+import ChatScreen from './containers/chat_screen';
 import realm from './realm';
 
 function is_never_loggedin() {
@@ -26,9 +27,8 @@ const scenes = Actions.create(
         <Scene key="logInScreen" component={LogInScreen} initial={true} hideNavBar={true} />
       </Scene>
     </Scene>
-
-    <Scene key="mainScreen" component={MainApp} hideNavBar={true} type="reset" initial={!is_never_loggedin()}/>
-
+    <Scene key="mainScreen" component={MainScreen} hideNavBar={true} type="reset" initial={!is_never_loggedin()}/>
+    <Scene key="chatScreen" component={ChatScreen} hideNavBar={true} />
   </Scene>
   </Scene>
 );
