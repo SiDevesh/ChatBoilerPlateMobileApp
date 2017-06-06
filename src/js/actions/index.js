@@ -4,6 +4,7 @@ import Auth0Lock from 'react-native-lock';
 import realm from '../realm';
 import { Actions } from 'react-native-router-flux';
 import { API_BASE_URL } from '../constants/constants';
+import { Auth0ClientID, Auth0Domain } from '../secrets';
 
 export const callAuth0LoggedInAction = (profile, token) => ({
   type: types.AUTH0_LOGGED_IN,
@@ -31,10 +32,10 @@ export function callAuth0LoggedOut() {
   return function(dispatch, getState) {
     let auth0_profile_config = realm.objectForPrimaryKey('ConfigData', 'auth0_profile');
     let auth0_token_config = realm.objectForPrimaryKey('ConfigData', 'auth0_token');
-    //realm.write(() => {
-    //  auth0_profile_config.value = '';
-    //  auth0_token_config.value = '';
-    //});
+    realm.write(() => {
+      auth0_profile_config.value = '';
+      auth0_token_config.value = '';
+    });
     dispatch(callAuth0LoggedOutAction());
   }
 }
@@ -61,11 +62,9 @@ export function debugIdTokenCorrupt() {
 
 export function callAuth0RefreshToken(caller_thunk) {
   return function (dispatch, getState) {
-    let auth0_client_id = realm.objectForPrimaryKey('ConfigData', 'auth0_client_id').value;
-    let auth0_domain = realm.objectForPrimaryKey('ConfigData', 'auth0_domain').value;
-    let Auth0LockObj = new Auth0Lock({clientId: auth0_client_id, domain: auth0_domain});
+    let Auth0LockObj = new Auth0Lock({clientId: Auth0ClientID, domain: Auth0Domain});
     let auth0 = Auth0LockObj.authenticationAPI();
-    auth0.refreshToken(getState().auth0state.token.refreshToken, {
+    auth0.refreshToken(getState().auth0State.token.refreshToken, {
       scope: "openid email offline_access"
     })
     .then((response) => {

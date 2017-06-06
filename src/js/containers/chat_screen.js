@@ -9,6 +9,7 @@ import { GiftedChat } from 'react-native-gifted-chat';
 import {Socket} from "../phoenix";
 import { API_BASE_URL } from '../constants/constants';
 import { connect } from 'react-redux';
+import { callAuth0RefreshToken } from '../actions';
 
 class ChatScreenComponent extends React.Component {
 
@@ -18,7 +19,9 @@ class ChatScreenComponent extends React.Component {
     this.onSend = this.onSend.bind(this);
   }
 
-  generateSubTopic(first_id, second_id) {
+  generateSubTopic() {
+    let first_id = this.props.user_id;
+    let second_id = this.props.chat_user_id.chat_user_id;
     if(first_id < second_id) {
       return first_id+","+second_id;
     }
@@ -29,36 +32,62 @@ class ChatScreenComponent extends React.Component {
 
   componentDidMount() {
     this.socket = new Socket(API_BASE_URL+"/socket", {params: {token: this.props.idToken}});
+    this.socket.onError(() => alert("there was an error with the connection!") );
+    this.socket.onClose(() => {
+      alert("the connection dropped");
+      this.props.auth0RefreshToken();
+    });
     this.socket.connect();
-    this.channel = this.socket.channel("private:"+this.generateSubTopic(this.props.user_id, this.props.chat_user_id), {});
+    this.channel = this.socket.channel("private:"+this.generateSubTopic(), {});
+    this.channel.onError(() => alert("there was an error!") );
+    this.channel.onClose(() => {
+      alert("the channel has gone away gracefully");
+    });
     this.channel.join()
-      .receive("ok", resp => { alert("Joined successfully") })
-      .receive("error", resp => { alert(resp.reason) })
+      .receive("ok", resp => {alert("Joined successfully, catching up");console.log(resp.messages);} )
+      .receive("error", resp => alert(resp.reason) )
+      .receive("timeout", () => alert("Networking issue. Still waiting...") );
+    this.channel.on("new:msg", msg => this.appendNewMessage(msg) )
+  }
+
+  appendNewMessage(msg) {
+    let new_message = {
+      _id: msg.id,
+      text: msg.body,
+      createdAt: new Date(Date.now()),
+      user: {
+        _id: msg.sender_id
+      },
+    }
+    this.setState((previousState) => {
+      return {
+        messages: GiftedChat.append(previousState.messages, [new_message]),
+      };
+    });
+  }
+
+  componentWillUnmount() {
+    this.channel.leave();
   }
 
   componentWillMount() {
     this.setState({
-      messages: [
-        {
-          _id: 1,
-          text: 'Hello developer',
-          createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
-          user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://facebook.github.io/react/img/logo_og.png',
-          },
-        },
-      ],
+      messages: []
     });
   }
 
   onSend(messages = []) {
-    this.setState((previousState) => {
-      return {
-        messages: GiftedChat.append(previousState.messages, messages),
-      };
+    messages.forEach((message) => {
+      this.channel.push("new:msg", {body: message.text}, 10000)
+       .receive("ok", (msg) => console.log("created message", msg) )
+       .receive("error", (reasons) => console.log("create failed", reasons) )
+       .receive("timeout", () => console.log("Networking issue...") );
     });
+    //this.setState((previousState) => {
+    //  return {
+    //    messages: GiftedChat.append(previousState.messages, messages),
+    //  };
+    //});
   }
 
   render() {
@@ -67,7 +96,7 @@ class ChatScreenComponent extends React.Component {
         messages={this.state.messages}
         onSend={this.onSend}
         user={{
-          _id: 1,
+          _id: this.props.user_id
         }}
       />
     );
@@ -85,8 +114,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    showChatScreen: (user_id) => {
-      //
+    auth0RefreshToken: () => {
+      dispatch(callAuth0RefreshToken());
     }
   }
 }

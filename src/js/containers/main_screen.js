@@ -17,10 +17,10 @@ class MainScreenComponent extends Component {
       <View style={styles.container}>
         <FlatList
           data={[
-            {id: '123456789', name: 'Jane Doe', last: 'hiiii!'},
-            {id: '1011121314', name: 'Janice Griffins', last: 'byee!'}
+            {id: 'auth0|59229095d4e199438b380740', name: 'sid.swap', last: 'hiiii!'},
+            {id: 'auth0|5924d91fd9643f3235f49e3a', name: 'swap.sid', last: 'byee!'}
           ]}
-          renderItem={({item}) => <RecentUsersListItem id={item.id} primaryText={item.name} secondaryText={item.last} onPress={()=>{this.props.showChatScreen({user_id: item.id})}}/>}
+          renderItem={({item}) => <RecentUsersListItem id={item.id} primaryText={item.name} secondaryText={item.last} onPress={()=>{this.props.showChatScreen({chat_user_id: item.id})}}/>}
         />
       </View>
     );
