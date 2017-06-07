@@ -9,19 +9,22 @@ import { GiftedChat } from 'react-native-gifted-chat';
 import {Socket} from "../phoenix";
 import { API_BASE_URL } from '../constants/constants';
 import { connect } from 'react-redux';
-import { callAuth0RefreshToken } from '../actions';
+import { callAuth0RefreshToken,
+         callChatScreenPurge,
+         callChatScreenNewMessage,
+         callChatScreenLoadEarlier,
+         callChatScreenChatterId } from '../actions';
 
 class ChatScreenComponent extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {messages: []};
     this.onSend = this.onSend.bind(this);
   }
 
   generateSubTopic() {
     let first_id = this.props.user_id;
-    let second_id = this.props.chat_user_id.chat_user_id;
+    let second_id = this.props.chatter_id;
     if(first_id < second_id) {
       return first_id+","+second_id;
     }
@@ -59,11 +62,7 @@ class ChatScreenComponent extends React.Component {
         _id: msg.sender_id
       },
     }
-    this.setState((previousState) => {
-      return {
-        messages: GiftedChat.append(previousState.messages, [new_message]),
-      };
-    });
+    this.props.newMessage(new_message);
   }
 
   componentWillUnmount() {
@@ -71,9 +70,8 @@ class ChatScreenComponent extends React.Component {
   }
 
   componentWillMount() {
-    this.setState({
-      messages: []
-    });
+    this.props.purge();
+    this.props.setChatterId(this.props.chat_user_id.chat_user_id);
   }
 
   onSend(messages = []) {
@@ -83,21 +81,19 @@ class ChatScreenComponent extends React.Component {
        .receive("error", (reasons) => console.log("create failed", reasons) )
        .receive("timeout", () => console.log("Networking issue...") );
     });
-    //this.setState((previousState) => {
-    //  return {
-    //    messages: GiftedChat.append(previousState.messages, messages),
-    //  };
-    //});
   }
 
   render() {
     return (
       <GiftedChat
-        messages={this.state.messages}
+        messages={this.props.messages}
         onSend={this.onSend}
         user={{
           _id: this.props.user_id
         }}
+        loadEarlier={!this.props.till_last_loaded}
+        onLoadEarlier={() => {this.props.loadEarlier();}}
+        isLoadingEarlier={this.props.status==='loading'}
       />
     );
   }
@@ -108,7 +104,12 @@ class ChatScreenComponent extends React.Component {
 const mapStateToProps = (state) => {
   return {
     idToken: state.auth0State.token.idToken,
-    user_id: state.auth0State.profile.userId
+    user_id: state.auth0State.profile.userId,
+    messages: state.chatScreen0State.messages,
+    last_id: state.chatScreen0State.last_id,
+    till_last_loaded: state.chatScreen0State.till_last_loaded,
+    chatter_id: state.chatScreen0State.chatter_id,
+    status: state.chatScreen0State.status
   }
 }
 
@@ -116,6 +117,18 @@ const mapDispatchToProps = (dispatch) => {
   return {
     auth0RefreshToken: () => {
       dispatch(callAuth0RefreshToken());
+    },
+    purge: () => {
+      dispatch(callChatScreenPurge());
+    },
+    newMessage: (message) => {
+      dispatch(callChatScreenNewMessage(message));
+    },
+    loadEarlier: () => {
+      dispatch(callChatScreenLoadEarlier());
+    },
+    setChatterId: (id) => {
+      dispatch(callChatScreenChatterId(id));
     }
   }
 }

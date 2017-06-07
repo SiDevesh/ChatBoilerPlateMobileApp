@@ -87,3 +87,83 @@ export function callAuth0RefreshToken(caller_thunk) {
     });
   }
 }
+
+export const callChatScreenChatterId = (chatter_id) => ({
+  type: types.CHAT_SCREEN_CHATTER_ID,
+  chatter_id: chatter_id
+})
+
+export const callChatScreenPurge = () => ({
+  type: types.CHAT_SCREEN_PURGE
+})
+
+export const callChatScreenNewMessage = (message) => ({
+  type: types.CHAT_SCREEN_NEW_MESSAGE,
+  message: message
+})
+
+export const callChatScreenLoadEarlierSuccess = (messages) => ({
+  type: types.CHAT_SCREEN_LOAD_EARLIER_SUCCESS,
+  messages: messages
+})
+
+export const callChatScreenLoadEarlierLoading = () => ({
+  type: types.CHAT_SCREEN_LOAD_EARLIER_LOADING
+})
+
+export const callChatScreenLoadEarlierError = () => ({
+  type: types.CHAT_SCREEN_LOAD_EARLIER_ERROR
+})
+
+export function callChatScreenLoadEarlier() {
+  return function (dispatch, getState) {
+    if(((getState().auth0State.profile!==null)&&(getState().auth0State.token!==null))&&(!getState().chatScreen0State.till_last_loaded)) {
+      dispatch(callChatScreenLoadEarlierLoading());
+      return fetch(
+        API_BASE_URL+`/api/v1/previous_messages/private/`+getState().chatScreen0State.chatter_id+(getState().chatScreen0State.last_id!==null ? `?last=`+(getState().chatScreen0State.last_id) : ""),
+        {
+          method: "GET",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer "+getState().auth0State.token.idToken
+          }
+        }
+      )
+      .then(response => {
+        if((response.status === 200)||(response.status === 400)||(response.status === 401)) {
+          return response.json();
+        }
+      })
+      .then((json) => {
+        if(!json.hasOwnProperty('errors')) {
+          dispatch(callChatScreenLoadEarlierSuccess(json.messages.map(adaptMessageObject)));
+        }
+        else {
+          if(json.errors[0]==="Invalid token.") {
+            dispatch(callAuth0RefreshToken(()=>{dispatch(callChatScreenLoadEarlier());}));
+          }
+          else {
+            console.log(json);
+            dispatch(callChatScreenLoadEarlierError());
+          }
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch(callChatScreenLoadEarlierError());
+      });
+    }
+  }
+}
+
+function adaptMessageObject(json_message) {
+  return {
+    _id: json_message.id,
+    text: json_message.content,
+    createdAt: new Date(json_message.inserted_at),
+    user: {
+      _id: json_message.sender_id
+    },
+  }
+}
