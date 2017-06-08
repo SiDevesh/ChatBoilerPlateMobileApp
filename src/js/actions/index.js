@@ -88,11 +88,6 @@ export function callAuth0RefreshToken(caller_thunk) {
   }
 }
 
-export const callChatScreenChatterId = (chatter_id) => ({
-  type: types.CHAT_SCREEN_CHATTER_ID,
-  chatter_id: chatter_id
-})
-
 export const callChatScreenPurge = () => ({
   type: types.CHAT_SCREEN_PURGE
 })
@@ -115,12 +110,12 @@ export const callChatScreenLoadEarlierError = () => ({
   type: types.CHAT_SCREEN_LOAD_EARLIER_ERROR
 })
 
-export function callChatScreenLoadEarlier() {
+export function callChatScreenLoadEarlier(chat_user_id) {
   return function (dispatch, getState) {
     if(((getState().auth0State.profile!==null)&&(getState().auth0State.token!==null))&&(!getState().chatScreen0State.till_last_loaded)) {
       dispatch(callChatScreenLoadEarlierLoading());
       return fetch(
-        API_BASE_URL+`/api/v1/previous_messages/private/`+getState().chatScreen0State.chatter_id+(getState().chatScreen0State.last_id!==null ? `?last=`+(getState().chatScreen0State.last_id) : ""),
+        API_BASE_URL+`/api/v1/previous_messages/private/`+chat_user_id+(getState().chatScreen0State.last_id!==null ? `?last=`+(getState().chatScreen0State.last_id) : ""),
         {
           method: "GET",
           headers: {

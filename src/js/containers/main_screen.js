@@ -5,16 +5,37 @@ import {
   StyleSheet,
   Text,
   View,
+  Platform,
   FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import RecentUsersListItem from '../components/recent_users_listitem';
+import NavigationBar from 'react-native-navbar';
+import * as Colors from '../constants/colors';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class MainScreenComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
+        {Platform.OS === 'android' &&
+          <Icon.ToolbarAndroid
+            title="CHAT"
+            style={styles.toolbar}
+            titleColor={Colors.TEXT_DARK_PRIMARY}
+          />
+        }
+        {Platform.OS === 'ios' &&
+          <NavigationBar
+            tintColor={Colors.TOOLBAR_SHADE}
+            statusBar={{style: 'dark-content'}}
+            title={{
+              title: "CHAT",
+              tintColor: Colors.TEXT_DARK_PRIMARY
+            }}
+          />
+        }
         <FlatList
           data={[
             {id: 'auth0|59229095d4e199438b380740', name: 'sid.swap', last: 'hiiii!'},
@@ -26,6 +47,19 @@ class MainScreenComponent extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    backgroundColor: Colors.BACKDROP,
+  },
+  toolbar: {
+    backgroundColor: Colors.TOOLBAR_SHADE,
+    height: 56
+  }
+});
 
 const mapStateToProps = (state) => {
   return {
@@ -47,23 +81,3 @@ const MainScreen = connect(
 )(MainScreenComponent)
 
 export default MainScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'stretch',
-    backgroundColor: '#FFFFFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-    color: '#000000',
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#000000',
-    marginBottom: 5,
-  },
-});

@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  View
+  View,
+  Platform
 } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import {Socket} from "../phoenix";
@@ -14,6 +15,10 @@ import { callAuth0RefreshToken,
          callChatScreenNewMessage,
          callChatScreenLoadEarlier,
          callChatScreenChatterId } from '../actions';
+import NavigationBar from 'react-native-navbar';
+import * as Colors from '../constants/colors';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Actions } from 'react-native-router-flux';
 
 class ChatScreenComponent extends React.Component {
 
@@ -24,7 +29,7 @@ class ChatScreenComponent extends React.Component {
 
   generateSubTopic() {
     let first_id = this.props.user_id;
-    let second_id = this.props.chatter_id;
+    let second_id = this.props.chat_user_id.chat_user_id;
     if(first_id < second_id) {
       return first_id+","+second_id;
     }
@@ -44,10 +49,10 @@ class ChatScreenComponent extends React.Component {
     this.channel = this.socket.channel("private:"+this.generateSubTopic(), {});
     this.channel.onError(() => alert("there was an error!") );
     this.channel.onClose(() => {
-      alert("the channel has gone away gracefully");
+      console.log("the channel has gone away gracefully");
     });
     this.channel.join()
-      .receive("ok", resp => {alert("Joined successfully, catching up");console.log(resp.messages);} )
+      .receive("ok", resp => {this.props.loadEarlier(this.props.chat_user_id.chat_user_id);} )
       .receive("error", resp => alert(resp.reason) )
       .receive("timeout", () => alert("Networking issue. Still waiting...") );
     this.channel.on("new:msg", msg => this.appendNewMessage(msg) )
@@ -71,7 +76,6 @@ class ChatScreenComponent extends React.Component {
 
   componentWillMount() {
     this.props.purge();
-    this.props.setChatterId(this.props.chat_user_id.chat_user_id);
   }
 
   onSend(messages = []) {
@@ -85,21 +89,64 @@ class ChatScreenComponent extends React.Component {
 
   render() {
     return (
-      <GiftedChat
-        messages={this.props.messages}
-        onSend={this.onSend}
-        user={{
-          _id: this.props.user_id
-        }}
-        loadEarlier={!this.props.till_last_loaded}
-        onLoadEarlier={() => {this.props.loadEarlier();}}
-        isLoadingEarlier={this.props.status==='loading'}
-      />
+      <View style={styles.container}>
+        {Platform.OS === 'android' &&
+          <Icon.ToolbarAndroid
+            title={this.props.chat_user_id.chat_user_id}
+            style={styles.toolbar}
+            titleColor={Colors.TEXT_DARK_PRIMARY}
+            navIconName='arrow-back'
+            onIconClicked={() => {
+              this.props.goToOverviewScreen();
+            }}
+          />
+        }
+        {Platform.OS === 'ios' &&
+          <NavigationBar
+            tintColor={Colors.TOOLBAR_SHADE}
+            statusBar={{style: 'dark-content'}}
+            title={{
+              title: this.props.chat_user_id.chat_user_id,
+              tintColor: Colors.TEXT_DARK_PRIMARY
+            }}
+            leftButton={{
+              title: 'Back',
+              tintColor: Colors.ACCENT,
+              handler: () => {
+                this.props.goToOverviewScreen();
+              }
+            }}
+          />
+        }
+        <GiftedChat
+          messages={this.props.messages}
+          onSend={this.onSend}
+          user={{
+            _id: this.props.user_id
+          }}
+          loadEarlier={!this.props.till_last_loaded}
+          onLoadEarlier={() => {this.props.loadEarlier(this.props.chat_user_id.chat_user_id);}}
+          isLoadingEarlier={this.props.status==='loading'}
+          shouldRenderAvatar={false}
+        />
+      </View>
     );
   }
 
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+    backgroundColor: Colors.BACKDROP,
+  },
+  toolbar: {
+    backgroundColor: Colors.TOOLBAR_SHADE,
+    height: 56
+  }
+});
 
 const mapStateToProps = (state) => {
   return {
@@ -108,7 +155,6 @@ const mapStateToProps = (state) => {
     messages: state.chatScreen0State.messages,
     last_id: state.chatScreen0State.last_id,
     till_last_loaded: state.chatScreen0State.till_last_loaded,
-    chatter_id: state.chatScreen0State.chatter_id,
     status: state.chatScreen0State.status
   }
 }
@@ -124,11 +170,11 @@ const mapDispatchToProps = (dispatch) => {
     newMessage: (message) => {
       dispatch(callChatScreenNewMessage(message));
     },
-    loadEarlier: () => {
-      dispatch(callChatScreenLoadEarlier());
+    loadEarlier: (chat_user_id) => {
+      dispatch(callChatScreenLoadEarlier(chat_user_id));
     },
-    setChatterId: (id) => {
-      dispatch(callChatScreenChatterId(id));
+    goToOverviewScreen: () => {
+      Actions.mainScreen();
     }
   }
 }

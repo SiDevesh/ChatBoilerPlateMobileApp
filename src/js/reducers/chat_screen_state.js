@@ -6,21 +6,16 @@ const initialState = {
   messages: [],
   last_id: null,
   till_last_loaded: false,
-  status: 'initial',
-  chatter_id: null
+  status: 'initial'
 };
 
 export default function chatScreen0State(state = initialState, action = {}) {
   switch (action.type) {
-    case types.CHAT_SCREEN_CHATTER_ID:
-      return {
-        ...state,
-        chatter_id: action.chatter_id
-      };
     case types.CHAT_SCREEN_NEW_MESSAGE:
       return {
         ...state,
-        messages: GiftedChat.append(state.messages, [action.message])
+        messages: GiftedChat.append(state.messages, [action.message]),
+        last_id: action.message["_id"]
       };
     case types.CHAT_SCREEN_LOAD_EARLIER_SUCCESS:
       return {
