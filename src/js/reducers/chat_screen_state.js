@@ -9,7 +9,7 @@ const initialState = {
   status: 'initial'
 };
 
-export default function chatScreen0State(state = initialState, action = {}) {
+export default function chatScreenState(state = initialState, action = {}) {
   switch (action.type) {
     case types.CHAT_SCREEN_NEW_MESSAGE:
       return {

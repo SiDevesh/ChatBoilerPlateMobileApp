@@ -1,5 +1,4 @@
 'use strict';
-
 import React, { Component } from 'react';
 import {
   StyleSheet,
@@ -14,8 +13,15 @@ import RecentUsersListItem from '../components/recent_users_listitem';
 import NavigationBar from 'react-native-navbar';
 import * as Colors from '../constants/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { callMainScreenPurge,
+         callMainScreenLoad } from '../actions';
 
 class MainScreenComponent extends Component {
+
+  componentDidMount() {
+    this.props.loadPeople();
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -36,16 +42,20 @@ class MainScreenComponent extends Component {
             }}
           />
         }
-        <FlatList
-          data={[
-            {id: 'auth0|59229095d4e199438b380740', name: 'sid.swap', last: 'hiiii!'},
-            {id: 'auth0|5924d91fd9643f3235f49e3a', name: 'swap.sid', last: 'byee!'}
-          ]}
-          renderItem={({item}) => <RecentUsersListItem id={item.id} primaryText={item.name} secondaryText={item.last} onPress={()=>{this.props.showChatScreen({chat_user_id: item.id})}}/>}
-        />
+        {this.props.status==='success' &&
+          <FlatList
+            data={this.props.people}
+            renderItem={({item}) => <RecentUsersListItem id={item.user_id} primaryText={item.user_id} secondaryText={item.chat_content} onPress={()=>{this.props.showChatScreen({chat_user_id: item.user_id})}}/>}
+          />
+        }
       </View>
     );
   }
+
+  componentWillUnmount() {
+    this.props.purge();
+  }
+
 }
 
 const styles = StyleSheet.create({
@@ -63,7 +73,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    //
+    people: state.mainScreenState.people,
+    status: state.mainScreenState.status
   }
 }
 
@@ -71,6 +82,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     showChatScreen: (user_id) => {
       Actions.chatScreen({chat_user_id: user_id});
+    },
+    loadPeople: () => {
+      dispatch(callMainScreenLoad());
+    },
+    purge: () => {
+      dispatch(callMainScreenPurge());
     }
   }
 }

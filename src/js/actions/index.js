@@ -112,10 +112,10 @@ export const callChatScreenLoadEarlierError = () => ({
 
 export function callChatScreenLoadEarlier(chat_user_id) {
   return function (dispatch, getState) {
-    if(((getState().auth0State.profile!==null)&&(getState().auth0State.token!==null))&&(!getState().chatScreen0State.till_last_loaded)) {
+    if(((getState().auth0State.profile!==null)&&(getState().auth0State.token!==null))&&(!getState().chatScreenState.till_last_loaded)) {
       dispatch(callChatScreenLoadEarlierLoading());
       return fetch(
-        API_BASE_URL+`/api/v1/previous_messages/private/`+chat_user_id+(getState().chatScreen0State.last_id!==null ? `?last=`+(getState().chatScreen0State.last_id) : ""),
+        API_BASE_URL+`/api/v1/previous_messages/private/`+chat_user_id+(getState().chatScreenState.last_id!==null ? `?last=`+(getState().chatScreenState.last_id) : ""),
         {
           method: "GET",
           headers: {
@@ -160,5 +160,64 @@ function adaptMessageObject(json_message) {
     user: {
       _id: json_message.sender_id
     },
+  }
+}
+
+export const callMainScreenPurge = () => ({
+  type: types.MAIN_SCREEN_PURGE
+})
+
+export const callMainScreenLoadSuccess = (people) => ({
+  type: types.MAIN_SCREEN_LOAD_SUCCESS,
+  people: people
+})
+
+export const callMainScreenLoadLoading = () => ({
+  type: types.MAIN_SCREEN_LOAD_LOADING
+})
+
+export const callMainScreenLoadError = () => ({
+  type: types.MAIN_SCREEN_LOAD_ERROR
+})
+
+export function callMainScreenLoad() {
+  return function (dispatch, getState) {
+    if(((getState().auth0State.profile!==null)&&(getState().auth0State.token!==null))&&(!getState().chatScreenState.till_last_loaded)) {
+      dispatch(callMainScreenLoadLoading());
+      return fetch(
+        API_BASE_URL+`/api/v1/overview`,
+        {
+          method: "GET",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer "+getState().auth0State.token.idToken
+          }
+        }
+      )
+      .then(response => {
+        if((response.status === 200)||(response.status === 400)||(response.status === 401)) {
+          return response.json();
+        }
+      })
+      .then((json) => {
+        if(!json.hasOwnProperty('errors')) {
+          dispatch(callMainScreenLoadSuccess(json.people));
+        }
+        else {
+          if(json.errors[0]==="Invalid token.") {
+            dispatch(callAuth0RefreshToken(()=>{dispatch(callMainScreenLoad());}));
+          }
+          else {
+            console.log(json);
+            dispatch(callMainScreenLoadError());
+          }
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch(callMainScreenLoadError());
+      });
+    }
   }
 }

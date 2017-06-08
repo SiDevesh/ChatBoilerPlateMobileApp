@@ -13,8 +13,7 @@ import { connect } from 'react-redux';
 import { callAuth0RefreshToken,
          callChatScreenPurge,
          callChatScreenNewMessage,
-         callChatScreenLoadEarlier,
-         callChatScreenChatterId } from '../actions';
+         callChatScreenLoadEarlier } from '../actions';
 import NavigationBar from 'react-native-navbar';
 import * as Colors from '../constants/colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -152,10 +151,10 @@ const mapStateToProps = (state) => {
   return {
     idToken: state.auth0State.token.idToken,
     user_id: state.auth0State.profile.userId,
-    messages: state.chatScreen0State.messages,
-    last_id: state.chatScreen0State.last_id,
-    till_last_loaded: state.chatScreen0State.till_last_loaded,
-    status: state.chatScreen0State.status
+    messages: state.chatScreenState.messages,
+    last_id: state.chatScreenState.last_id,
+    till_last_loaded: state.chatScreenState.till_last_loaded,
+    status: state.chatScreenState.status
   }
 }
 
